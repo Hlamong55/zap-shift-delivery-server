@@ -340,6 +340,12 @@ async function run() {
     })
 
 
+    app.delete('/riders/:id', verifyFBToken, async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await riderCollection.deleteOne(query);
+    res.send(result);
+    });
 
 
 
