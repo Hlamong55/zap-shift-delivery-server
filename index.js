@@ -129,6 +129,14 @@ async function run() {
 
 
     // parcel related api
+    app.get("/parcels/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await parcelsCollection.findOne(query);
+      res.send(result);
+    });
+
+
     app.get("/parcels", async (req, res) => {
       const query = {};
       const { email } = req.query;
@@ -140,14 +148,6 @@ async function run() {
 
       const cursor = parcelsCollection.find(query, options);
       const result = await cursor.toArray();
-      res.send(result);
-    });
-
-
-    app.get("/parcels/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await parcelsCollection.findOne(query);
       res.send(result);
     });
 
@@ -205,7 +205,6 @@ async function run() {
       console.log(session);
       res.send({ url: session.url });
     });
-
 
 
     // Tracking Id and store with parcel
@@ -346,7 +345,6 @@ async function run() {
     const result = await riderCollection.deleteOne(query);
     res.send(result);
     });
-
 
 
 
