@@ -79,6 +79,22 @@ async function run() {
 
 
 
+    // middleware for allowing admin activity
+    // must be used after verifyFBToken
+    const verifyAdmin = async(req, res, next) => {
+      const email = req.decoded_email;
+      const query = {email};
+      const user = await userCollection.findOne(query);
+
+      if (!user || user.role !== "admin") {
+        return res.stattus(403).send({ message: "Forbidden Access"});
+      }
+
+      next();
+    }
+
+
+
     // users related api
     app.get("/users", verifyFBToken, async (req, res) => {
       const cursor = userCollection.find();
@@ -112,7 +128,7 @@ async function run() {
     })
 
 
-    app.patch("/users/:id", async (req,res) => {
+    app.patch("/users/:id/role", verifyFBToken, verifyAdmin, async (req,res) => {
       const id = req.params.id;
       const roleInfo = req.body;
       const query = { _id: new ObjectId(id) };
