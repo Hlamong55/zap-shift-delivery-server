@@ -86,7 +86,7 @@ async function run() {
       const query = {email};
       const user = await userCollection.findOne(query);
 
-      if (!user || user.role !== "admin") {
+      if (!user || user.role !== "Admin") {
         return res.stattus(403).send({ message: "Forbidden Access"});
       }
 
@@ -97,7 +97,7 @@ async function run() {
 
     // users related api
     app.get("/users", verifyFBToken, async (req, res) => {
-      const cursor = userCollection.find();
+      const cursor = userCollection.find().sort({ createdAt: -1 });
       const result = await cursor.toArray();
       res.send(result);
     })
@@ -329,7 +329,7 @@ async function run() {
     })
 
 
-    app.patch('/riders/:id', verifyFBToken, async(req, res) => {
+    app.patch('/riders/:id', verifyFBToken, verifyAdmin, async(req, res) => {
       const status = req.body.status;
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
@@ -355,7 +355,7 @@ async function run() {
     })
 
 
-    app.delete('/riders/:id', verifyFBToken, async (req, res) => {
+    app.delete('/riders/:id', verifyFBToken, verifyAdmin, async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
     const result = await riderCollection.deleteOne(query);
