@@ -188,6 +188,7 @@ async function run() {
 
 
 
+    
 
     // payment history related api
     app.get('/payments', verifyFBToken, async(req,res) => {
@@ -201,13 +202,14 @@ async function run() {
 
         // check decoded email with user email
         if(email !== req.decoded_email){
-          return res.status(403).send({message: 'forbidden access'})
+          return res.status(403).send({message: 'Forbidden Access'})
         }
       }
       const cursor = paymentCollection.find(query).sort({paidAt: -1});
       const result = await cursor.toArray();
       res.send(result);
     })
+    
 
     // payment related api
     app.post("/create-checkout-session", async(req, res) => {
@@ -256,7 +258,7 @@ async function run() {
 
       if(paymentExist){
         return res.send({
-          messsage: 'Already exist', 
+          messsage: 'Already exist payment', 
           transactionId,
           trackingId: paymentExist.trackingId
         });
@@ -299,10 +301,9 @@ async function run() {
             paymentInfo: resultPayment});
         }
       }
-
       res.send({success: false})
     })
-    
+
 
 
 
